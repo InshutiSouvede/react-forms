@@ -10,20 +10,24 @@ export default function App() {
     confirmPassword:'',
     gender:'',
     location:'',
-    sports:{
-      basketball:false,
-      football:false,
-      marathon:false,
-      cycling:false,
-    }
+    sports:[]
   })
   function handleChange(event){
     console.log(event.target.required, event.target.type==='checkbox'?event.target.checked:event.target.value)
     const el = event.target 
     if(el.type==='checkbox'){
-      setFormData(prev=>{
-        return {...prev,sports:{...prev.sports,[el.name]: el.checked}}
-      })
+      if(el.checked){
+        setFormData(prev=>{
+          return {...prev,sports:[...prev.sports, el.value]}
+        })
+      }else{
+        setFormData(prev=>{
+          const sports = prev.sports.filter((sport)=>sport!==el.value)
+        return {...prev,sports:sports}
+        })
+        
+      }
+      
     }else{
       setFormData(prev=>{
         return {...prev,[el.name]:el.value}
@@ -31,18 +35,18 @@ export default function App() {
     }
   }
   function signup(event){
-    console.log("Validate")
     event.preventDefault()
     if(!formData.password ||!formData.gender|| !formData.location|| !formData.firstName || !formData.lastName || !formData.gender || !formData.email){
       setErr("Some required fields are not filled")
     }else if( formData.password!==formData.confirmPassword){
       setErr("Password is required and passwords must match")
     }
-    else if(!formData.sports.basketball&& !formData.sports.basketball&& !formData.sports.cycling&& !formData.sports.marathon){
+    else if(!formData.sports.length){
       setErr("Choose at least one sport")
     }else {
       console.log("These are the data you are going to submit",formData)
       setErr("")
+      localStorage.setItem("userInfo",JSON.stringify({...formData}))
     }
   }
   return (
@@ -83,21 +87,21 @@ export default function App() {
             <span className="">Favorite sports:</span>
 
             <div className="flex gap-5">
-              <input onChange={handleChange} type="checkbox" name="cycling" id="cycling" checked={formData.sports.cycling}/>
+              <input onChange={handleChange} type="checkbox" value ="cycling" name="cycling" id="cycling" checked={formData.sports.cycling}/>
               <label htmlFor="cycling">Cycling</label>
             </div>
 
             <div className="flex gap-5">
-              <input onChange={handleChange} type="checkbox" name="marathon" id="marathon" checked = {formData.sports.marathon} />
+              <input onChange={handleChange} type="checkbox" value ="marathon" name="marathon" id="marathon" checked = {formData.sports.marathon} />
               <label htmlFor="marathon">Marathon/Running</label>
             </div>
 
             <div className="flex gap-5">
-              <input  onChange={handleChange} type="checkbox" name="basketball" id="basketball"  checked = {formData.sports.basketball}/>
+              <input  onChange={handleChange} type="checkbox" value ="basketball" name="basketball" id="basketball"  checked = {formData.sports.basketball}/>
               <label htmlFor="basketball">Basketball</label>
             </div>
             <div className="flex gap-5">
-              <input  onChange={handleChange}type="checkbox" name="football" id="football" checked={formData.sports.football} />
+              <input  onChange={handleChange} type="checkbox" value ="football" name="football" id="football" checked={formData.sports.football} />
               <label htmlFor="football">Football</label>
             </div>
           </div>
