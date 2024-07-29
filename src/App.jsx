@@ -1,11 +1,12 @@
 import { useState } from "react"
 
 export default function App() {
+  const [err,setErr] = useState("")
   const [formData,setFormData] = useState({
     firstName:'',
     lastName:'',
-    emai:'',
     password:'',
+    email:'',
     confirmPassword:'',
     gender:'',
     location:'',
@@ -17,7 +18,7 @@ export default function App() {
     }
   })
   function handleChange(event){
-    console.log(event.target.name, event.target.type==='checkbox'?event.target.checked:event.target.value)
+    console.log(event.target.required, event.target.type==='checkbox'?event.target.checked:event.target.value)
     const el = event.target 
     if(el.type==='checkbox'){
       setFormData(prev=>{
@@ -29,15 +30,31 @@ export default function App() {
       })
     }
   }
+  function signup(event){
+    console.log("Validate")
+    event.preventDefault()
+    if(!formData.password ||!formData.gender|| !formData.location|| !formData.firstName || !formData.lastName || !formData.gender || !formData.email){
+      setErr("Some required fields are not filled")
+    }else if( formData.password!==formData.confirmPassword){
+      setErr("Password is required and passwords must match")
+    }
+    else if(!formData.sports.basketball&& !formData.sports.basketball&& !formData.sports.cycling&& !formData.sports.marathon){
+      setErr("Choose at least one sport")
+    }else {
+      console.log("These are the data you are going to submit",formData)
+      setErr("")
+    }
+  }
   return (
     <>
       <form action="#" className="flex flex-col w-3/5 p-10 gap-5 text-xl  my-10 border-2 rounded-xl m-auto border-violet-500">
         <h1 className="font-bold text-center text-violet-500">Sign up</h1>
-        <input onChange={handleChange} className="border-2 border-violet-200 h-14 rounded-md px-5" value={formData.firstName} type="text" name="firstName" placeholder="Souvede"  />
-        <input onChange={handleChange} className="border-2 border-violet-200 h-14 rounded-md px-5" value={formData.lastName} type="text" name="lastName" placeholder="Inshuti"/>
-        <input onChange={handleChange} className="border-2 border-violet-200 h-14 rounded-md px-5" value={formData.email} type="email" name="email" placeholder="email@example.com" />
-        <input onChange={handleChange} className="border-2 border-violet-200 h-14 rounded-md px-5" value={formData.password} type="password" name="password" placeholder="password" />
-        <input onChange={handleChange} className="border-2 border-violet-200 h-14 rounded-md px-5" value={formData.confirmPassword} type="password" name="confirmPassword" placeholder="confirm password" />
+        <p className="text-red-700">{err}</p>
+        <input required={true} onChange={handleChange} className="border-2 border-violet-200 h-14 rounded-md px-5" value={formData.firstName} type="text" name="firstName" placeholder="Souvede"  />
+        <input required={true} onChange={handleChange} className="border-2 border-violet-200 h-14 rounded-md px-5" value={formData.lastName} type="text" name="lastName" placeholder="Inshuti"/>
+        <input required={true} onChange={handleChange} className="border-2 border-violet-200 h-14 rounded-md px-5" value={formData.email} type="email" name="email" placeholder="email@example.com" />
+        <input required={true} onChange={handleChange} className="border-2 border-violet-200 h-14 rounded-md px-5" value={formData.password} type="password" name="password" placeholder="password" />
+        <input required={true} onChange={handleChange} className="border-2 border-violet-200 h-14 rounded-md px-5" value={formData.confirmPassword} type="password" name="confirmPassword" placeholder="confirm password" />
         <span>Gender</span>
         <div className="flex gap-20">
           <div className="flex gap-5">
@@ -52,7 +69,7 @@ export default function App() {
         <div className="grid grid-cols-2">
           <div className="flex flex-col">
             <span className="">Location(province):</span>
-            <select onChange={handleChange} name="location" className="mr-10 px-5 bg-violet-200" >
+            <select required onChange={handleChange} name="location" className="mr-10 px-5 bg-violet-200" >
               <option value="">---Provinces---</option>
               <option value="kigali">Kigali</option>
               <option value="southern">Southern</option>
@@ -87,7 +104,7 @@ export default function App() {
         </div>
 
 
-        <button type="submit" className="bg-violet-500 px-5 py-2 rounded-xl w-max m-auto text-white">Submit</button>
+        <button type="submit" onClick={signup} className="bg-violet-500 px-5 py-2 rounded-xl w-max m-auto text-white">Submit</button>
       </form>
     </>
   )
